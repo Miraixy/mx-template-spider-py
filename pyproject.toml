@@ -1,0 +1,68 @@
+[tool.poetry]
+name = "mx-template-spider-py"
+version = "0.1.0"
+description = "一套简易的爬虫模板"
+authors = ["KroMiose <li_xiangff@163.com>"]
+readme = "README.md"
+packages = [{ include = "src" }, { include = "test" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+loguru = "^0.7.0"
+ujson = "^5.8.0"
+python-multipart = "^0.0.6"
+sqlalchemy = "^2.0.20"
+lxml = "^4.9.3"
+aiohttp = "^3.8.5"
+
+[tool.poetry.scripts]
+start = "src.app:start"
+test = "test.test:start"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+extend-exclude = []
+ignore = [
+  "E501",
+  "E722",
+  "B008",
+  "B905",
+  "TID252",
+  "TRY002",
+  "TRY003",
+  "RUF001",
+  "RUF002",
+  "RUF003",
+  "RUF006",
+  "RUF100",
+  "PGH003",
+  "N801",
+  "A003",
+]
+select = [
+  "F",
+  "E",
+  "I",
+  "B",
+  "A",
+  "COM",
+  "C4",
+  "ISC",
+  "PIE",
+  "PYI",
+  "Q",
+  "RSE",
+  "RET",
+  "SLF",
+  "SIM",
+  "TID",
+  "ARG",
+  "PTH",
+  "PGH",
+  "TRY",
+  "RUF",
+]

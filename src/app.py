@@ -37,28 +37,33 @@ async def deal_url(origin_url: DB_Url | str):
     else:
         url = origin_url
 
+    domain = get_url_domain(str(url.value))
+
+    # 域名检查
+    if ALLOW_DOMAIN != "*" and domain != ALLOW_DOMAIN:
+        finish_url(url, f"域名: {domain} 不在允许范围内")
+        return
+
     logger.info(f"开始处理 url: {url.value}...")
 
-    domain = get_url_domain(str(url.value))
     xf = X_Finder(await async_fetch(str(url.value)))
     new_urls = xf.get_all_url()
 
     # 获取所有当前页面链接的 url
     for u in [u for u in new_urls if u.strip()]:
-        domain = get_url_domain(u) or domain
+        _domain = get_url_domain(u)
+        # 跳过无法解析的域名
+        if not _domain:
+            continue
         # 相对路径处理
         if is_relative_url(u):
             u = f"{url.value}{u}"
         # 重复检查
         if u == str(url.value):
             continue
-        # 域名检查
-        if ALLOW_DOMAIN != "*" and domain != ALLOW_DOMAIN:
-            finish_url(url, "域名不在允许范围内")
-            continue
 
         if DB_Url.get_by_url(str(u)) is None:
-            DB_Url.add(DB_Url(value=u, domain=domain))
+            DB_Url.add(DB_Url(value=u, domain=_domain))
 
     if tw.check_item_url(url, xf):
         # 开始爬取页面信息

@@ -10,7 +10,7 @@ from src.utils import (
 
 
 async def main():
-    url = "https://www.lookick.ru/"
+    url = "https://www.baidu.com/"
 
     print(f"domain: {get_url_domain(url)}")
     print(f"path: {get_url_path(url)}")

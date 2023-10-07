@@ -29,6 +29,8 @@ def finish_url(url: DB_Url, reason: str = ""):
 @retry
 async def deal_url(origin_url: DB_Url | str):
     """处理 url"""
+    sta = time.time()
+
     if isinstance(origin_url, str):
         url: DB_Url | None = DB_Url.get_by_url(reduce_url(origin_url))
         if url is None:
@@ -65,13 +67,16 @@ async def deal_url(origin_url: DB_Url | str):
         if DB_Url.get_by_url(str(u)) is None:
             DB_Url.add(DB_Url(value=u, domain=_domain))
 
-    if tw.check_item_url(url, xf):
-        # 开始爬取页面信息
-        tw.crawl_item_url(url, xf)
+    try:
+        if tw.check_item_url(url, xf):
+            # 开始爬取页面信息
+            tw.crawl_item_url(url, xf)
+    except Exception as e:
+        finish_url(url, f"爬取 url: {url} 失败 | 错误: {e}")
+        logger.error(f"爬取 url: {url} 失败 | 错误: {e}")
+    finally:
+        finish_url(url, "爬取完成")
 
-    finish_url(url, "爬取完成")
-
-    sta = time.time()
     logger.info(f"爬取 url: {url.value} 完成 | 页面 url 数量: {len(new_urls)} | 耗时: {time.time() - sta}s")
 
 
